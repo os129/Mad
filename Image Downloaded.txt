@@ -1,0 +1,153 @@
+XML
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center">
+
+    <!-- Button to download image -->
+    <Button
+        android:id="@+id/btnImageDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Download Image"
+        android:layout_marginBottom="16dp" />
+
+    <!-- ImageView to display the downloaded image -->
+    <ImageView
+        android:id="@+id/ShowImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"/>
+</LinearLayout>
+
+JAVA
+package com.example.imagedownload;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    private ImageView ShowImage;
+    private Button btnImageDownload;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize views
+        ShowImage = findViewById(R.id.ShowImage);
+        btnImageDownload = findViewById(R.id.btnImageDownload);
+
+        // Set OnClickListener for the button
+        btnImageDownload.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        // Start the image download in a background thread
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                downloadImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQP3izUPYGkqcR_cE7KqGJj1QW3MaHXxhZ1OmXboMxIGd7l3-MsplGtGALzzXrs-K8V-xE&usqp=CAU");
+            }
+        }).start();
+    }
+
+    private void downloadImage(final String urlString) {
+        HttpURLConnection httpURLConnection = null;
+        InputStream inputStream = null;
+        try {
+            // Open URL connection
+            URL url = new URL(urlString);
+            httpURLConnection = (HttpURLConnection) url.openConnection();
+            inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
+
+            // Decode the input stream into a Bitmap
+            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+            // Use a Handler to update the UI on the main thread
+            new Handler(getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (bitmap != null) {
+                        ShowImage.setImageBitmap(bitmap);
+                        Toast.makeText(getApplicationContext(), "Download Successful", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Download Failed", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
+            try {
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+
+Manifest.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ImageDownload"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+    </application>
+
+</manifest>
