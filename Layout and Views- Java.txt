@@ -1,0 +1,109 @@
+package com.example.layoutandviews;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Switch;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.DatePicker;
+import android.widget.TimePicker;
+import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView textViewLinear, textViewRelative, textViewConstraint, textViewSpinner;
+    private CheckBox checkBox;
+    private RadioGroup radioGroup;
+    private Switch switchButton;
+    private Spinner spinner;
+    private DatePicker datePicker;
+    private TimePicker timePicker;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize views
+        textViewLinear = findViewById(R.id.textViewLinear);
+        textViewRelative = findViewById(R.id.textViewRelative);
+        textViewConstraint = findViewById(R.id.textViewConstraint);
+        textViewSpinner = findViewById(R.id.textViewSpinner);
+        checkBox = findViewById(R.id.checkBox);
+        radioGroup = findViewById(R.id.radioGroup);
+        switchButton = findViewById(R.id.switchButton);
+        spinner = findViewById(R.id.spinner);
+        datePicker = findViewById(R.id.datePicker);
+        timePicker = findViewById(R.id.timePicker);
+
+        // Set up the spinner adapter
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sample_spinner_items, android.R.layout.simple_spinner_item);
+
+        // Set the layout for the dropdown menu
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Set the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        // Set an item selected listener for the spinner
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                String selectedItem = parentView.getItemAtPosition(position).toString();
+                textViewSpinner.setText("Selected Item: " + selectedItem);  // Display selected item in the TextView
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                textViewSpinner.setText("No item selected");
+            }
+        });
+    }
+
+    public void onButtonClick(View view) {
+        // Update the text for each layout section when the button is clicked
+        textViewLinear.setText("LinearLayout Button Clicked");
+        textViewRelative.setText("RelativeLayout Button Clicked");
+        textViewConstraint.setText("ConstraintLayout Button Clicked");
+
+        // Display the values of the CheckBox, RadioButton, Switch, and Spinner
+        String checkBoxStatus = checkBox.isChecked() ? "Accepted" : "Not Accepted";
+        String selectedRadioButton = ((RadioButton) findViewById(radioGroup.getCheckedRadioButtonId())).getText().toString();
+        String switchStatus = switchButton.isChecked() ? "Enabled" : "Disabled";
+        String spinnerSelectedItem = spinner.getSelectedItem().toString();
+
+        Toast.makeText(this, "CheckBox: " + checkBoxStatus + "\nRadioButton: " + selectedRadioButton +
+                "\nSwitch: " + switchStatus + "\nSpinner: " + spinnerSelectedItem, Toast.LENGTH_LONG).show();
+    }
+
+    public void onCheckBoxClick(View view) {
+        // Handle CheckBox click event
+        boolean isChecked = checkBox.isChecked();
+        Toast.makeText(this, "CheckBox is " + (isChecked ? "checked" : "unchecked"), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onSwitchClick(View view) {
+        // Handle Switch click event
+        boolean isOn = switchButton.isChecked();
+        Toast.makeText(this, "Switch is " + (isOn ? "On" : "Off"), Toast.LENGTH_SHORT).show();
+    }
+
+    public void onRadioButtonClick(View view) {
+        // Handle RadioButton click event
+        int selectedId = radioGroup.getCheckedRadioButtonId();
+        RadioButton selectedRadioButton = findViewById(selectedId);
+        String selectedText = selectedRadioButton.getText().toString();
+        Toast.makeText(this, "Selected RadioButton: " + selectedText, Toast.LENGTH_SHORT).show();
+    }
+}
+
+

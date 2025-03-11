@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <!-- ScrollView to make everything scrollable -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <!-- LinearLayout Section -->
+            <TextView
+                android:id="@+id/textViewLinear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView in LinearLayout"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/buttonLinear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Me"
+                android:onClick="onButtonClick" />
+
+            <CheckBox
+                android:id="@+id/checkBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Accept Terms"
+                android:onClick="onCheckBoxClick"/>
+
+            <!-- RelativeLayout Section -->
+            <TextView
+                android:id="@+id/textViewRelative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView in RelativeLayout"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/buttonRelative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Me"
+                android:onClick="onButtonClick" />
+
+            <RadioGroup
+                android:id="@+id/radioGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Option 1" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Option 2" />
+            </RadioGroup>
+
+            <!-- Spinner Section -->
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:entries="@array/sample_spinner_items" />
+
+            <TextView
+                android:id="@+id/textViewSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Selected Item from Spinner will appear here"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+
+            <!-- ImageView Section -->
+            <FrameLayout
+                android:id="@+id/frameLayout"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp">
+
+                <ImageView
+                    android:src="@drawable/ic_launcher_foreground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center" />
+            </FrameLayout>
+
+            <!-- ConstraintLayout Section -->
+            <TextView
+                android:id="@+id/textViewConstraint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView in ConstraintLayout"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
+
+            <Button
+                android:id="@+id/buttonConstraint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Click Me"
+                android:onClick="onButtonClick" />
+
+            <Switch
+                android:id="@+id/switchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable Feature"
+                android:layout_marginTop="10dp"
+                android:onClick="onSwitchClick" />
+
+            <!-- DatePicker Section -->
+            <DatePicker
+                android:id="@+id/datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+            <!-- TimePicker Section -->
+            <TimePicker
+                android:id="@+id/timePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:timePickerMode="spinner" />
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
