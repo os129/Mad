@@ -1,0 +1,185 @@
+activity_main.xml :
+
+
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <!-- Progress Bar to show task progress -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+    android:progress="0"
+    android:max="100" />
+
+    <!-- TextView to display the counter value -->
+    <TextView
+        android:id="@+id/counterTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Counter will appear here"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center" />
+
+    <!-- Start Button -->
+    <Button
+        android:id="@+id/startButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Stop Button -->
+    <Button
+        android:id="@+id/stopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stop"
+        android:layout_marginTop="10dp"
+        android:enabled="false"/>  <!-- Initially disabled -->
+</LinearLayout>
+
+
+MainActivity.java :
+
+package com.example.imgbg;
+
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import androidx.appcompat.app.AppCompatActivity;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView counterTextView;
+    private ProgressBar progressBar;
+    private Button startButton;
+    private Button stopButton;
+
+    private CounterTask counterTask; // To manage the background task
+    private boolean isRunning = false; // To track if the counter is running
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // Initialize views
+        counterTextView = findViewById(R.id.counterTextView);
+        progressBar = findViewById(R.id.progressBar);
+        startButton = findViewById(R.id.startButton);
+        stopButton = findViewById(R.id.stopButton);
+
+        // Set onClick listeners for buttons
+        startButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isRunning) {
+                    startCounter();
+                }
+            }
+        });
+
+        stopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stopCounter();
+            }
+        });
+    }
+
+    // Start the counter in background using AsyncTask
+    private void startCounter() {
+        // Disable the Start button and enable the Stop button
+        startButton.setEnabled(false);
+        stopButton.setEnabled(true);
+
+        // Start the AsyncTask
+        counterTask = new CounterTask();
+        counterTask.execute(0); // Start counting from 0
+        isRunning = true;
+
+        // Show the progress bar
+        progressBar.setVisibility(ProgressBar.VISIBLE);
+    }
+
+    // Stop the counter
+    private void stopCounter() {
+        if (counterTask != null) {
+            counterTask.cancel(true); // Cancel the task
+        }
+
+        // Disable the Stop button and enable the Start button
+        startButton.setEnabled(true);
+        stopButton.setEnabled(false);
+
+        // Hide the progress bar
+        progressBar.setVisibility(ProgressBar.GONE);
+        isRunning = false;
+    }
+
+    // AsyncTask to perform background counting
+    private class CounterTask extends AsyncTask<Integer, Integer, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // Initialize any pre-execution setup
+        }
+
+        @Override
+        protected Void doInBackground(Integer... params) {
+            int count = params[0];  // Start counting from this value (0 in this case)
+            int maxCount = 100;      // Set the limit to count to (e.g., 100)
+
+            // Perform counting in the background
+            while (count <= maxCount) {
+                if (isCancelled()) {
+                    break; // Exit if the task is cancelled
+                }
+
+                try {
+                    Thread.sleep(1000); // Simulate a delay (e.g., network operation)
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                // Publish progress every time the counter updates
+                publishProgress(count);
+                count++; // Increment the counter
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+            // Update the UI with the current count
+            counterTextView.setText("Counter: " + values[0]);
+
+            // Update progress bar (assuming max progress is 100)
+            progressBar.setProgress(values[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+            // Hide progress bar after task completion
+            progressBar.setVisibility(ProgressBar.GONE);
+            // Enable the Start button again
+            startButton.setEnabled(true);
+            stopButton.setEnabled(false);
+        }
+    }
+}
